@@ -1,8 +1,10 @@
+from passlib.context import CryptContext
 from .database import SessionLocal, engine, Base
 from . import models
 
 Base.metadata.create_all(bind=engine)
 db = SessionLocal()
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 if db.query(models.Product).count() == 0:
     productos = [
@@ -61,5 +63,22 @@ if db.query(models.Product).count() == 0:
     print(f"Seed completado: {len(productos)} productos insertados.")
 else:
     print("Ya existen productos, no se insertó nada.")
+
+if db.query(models.User).count() == 0:
+    usuarios = [
+        models.User(
+            username="marco",
+            hashed_password=pwd_context.hash("password123")
+        ),
+        models.User(
+            username="antonio",
+            hashed_password=pwd_context.hash("password456")
+        )
+    ]
+    db.add_all(usuarios)
+    db.commit()
+    print(f"Usuarios insertados: {len(usuarios)}")
+else:
+    print("Ya existen usuarios, no se insertó nada.")
 
 db.close()
