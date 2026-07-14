@@ -24,3 +24,5 @@ app.include_router(auth.router)
 @app.get("/")
 def root():
     return {"status": "ok"}
+
+#  py -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
